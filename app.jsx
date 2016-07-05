@@ -126,11 +126,100 @@ var Comments = React.createClass({
   }
 });
 
+var Add = React.createClass({
+  getInitialState: function() { // state
+    return {
+      agreeNotChecked: true,
+      authorIsEmpty: true,
+      textIsEmpty: true
+    };
+  },
+
+  onAuthorChange: function(e) {
+    if (e.target.value.trim().length > 0) {
+      this.setState({authorIsEmpty: false})
+    } else {
+      this.setState({authorIsEmpty: true})
+    }
+  },
+  onTextChange: function(e) {
+    if (e.target.value.trim().length > 0) {
+      this.setState({textIsEmpty: false})
+    } else {
+      this.setState({textIsEmpty: true})
+    }
+  },
+
+  // componentDidMount - Make focus in input
+  componentDidMount: function() { 
+    ReactDOM.findDOMNode(this.refs.author).focus();
+  },
+
+  onBtnClickHandler: function(e) {
+    e.preventDefault();
+    // Uncontrolled Components
+    // console.log(this.refs);
+
+    var author = ReactDOM.findDOMNode(this.refs.author).value;
+    var text = ReactDOM.findDOMNode(this.refs.text).value;
+
+    console.log(author + '\n' + text);
+  },
+
+  onCheckRuleClick: function(e) {
+    this.setState({agreeNotChecked: !this.state.agreeNotChecked}); //устанавливаем значение в state
+  },
+
+  render: function() {
+    var agreeNotChecked = this.state.agreeNotChecked,
+        authorIsEmpty = this.state.authorIsEmpty,
+        textIsEmpty = this.state.textIsEmpty;
+
+    return (
+
+      <form className='add cf'>
+        <p> Name </p>
+        <input
+          type='text'
+          className='add__author'
+          onChange={this.onAuthorChange}
+          placeholder='Ваше имя'
+          ref='author'
+        />
+
+        <p> Message </p>
+        <textarea className='add__text'
+          defaultValue=''
+          placeholder='Type text'
+          ref='text'
+          onChange={this.onTextChange}
+        ></textarea>
+
+        <label className='add__checkrule'>
+          <input type='checkbox' ref='checkrule' onChange={this.onCheckRuleClick}/>Я согласен с правилами
+        </label>
+
+        <button
+          className='add__btn'
+          onClick={this.onBtnClickHandler}
+          ref='add_button'
+          disabled={agreeNotChecked || authorIsEmpty || textIsEmpty}
+          >
+          Add news
+        </button>
+
+      </form>
+      
+    );
+  }
+});
+
 var App = React.createClass({
   render: function() {
     return (
       <div className="app">
-        <h3>Новости</h3>
+        <h3>News</h3>
+        <Add />
         <News data={my_news}/>
       </div>
     );
